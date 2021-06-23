@@ -1,6 +1,6 @@
 package ADT.services.implementations;
 
-import ADT.services.interfaes.ITranslateService;
+import ADT.services.interfaces.ITranslateService;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,4 +1,4 @@
-package ADT.services.interfaes;
+package ADT.services.interfaces;
 
 public interface ITranslateService {
     void insertText();
