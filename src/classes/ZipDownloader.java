@@ -1,6 +1,7 @@
 package classes;
 
 import classes.interfaces.IDownloaderService;
+import classes.interfaces.IValidatorService;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
