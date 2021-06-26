@@ -1,166 +1,304 @@
 package classes;
 
 import java.io.*;
+import java.util.ArrayList;
 
-/* TODO сделать поиск Сваггеров @ (здесь список: https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X) */
+/* Класс для поиска комментариев/String в коде */
+
+/* TODO сделать поиск Сваггеров @ (здесь список: https://github.com/swagger-api/swagger-core/wiki/Annotations-1.5.X) 
+ * Продумать как программа будет запоминать количество переведенной информации(количество строк и комментариев) */
+
 public class Finder {
-	int indexStart = -1; // индекс начала комментария
-	int indexOfDoubleDot = -1; // индекс для поиска двоеточих, чтобы не выводить https:// как коммент
-	int indexOfQuotes1 = -1; // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
-	int indexOfQuotes2 = -1; // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев 
-	int indexEnd = -1; // индекс окончания комментария, если это '/* */'
-	int countLines = 0; // количество строк коммента '/* */', если коммент заканчивается на другой строчке
-	int countLines1 = 0; // количество строк String, если он заканчивается на другой строчке
+	final char quotes = (char) 34; // в этой переменной хранятся кавычки, т.к. не получается писать кавычки в кавычках
 	
-	final char dm = (char) 34; // в этой переменной хранятся кавычки, т.к. не получается писать кавычки в кавычках
-	
-	boolean bool = true; // true - конец коммента '/* */' найден или не ищется. false - конец коммента '/* */' не найден, но ищется
-	boolean bool1 = true; // true - конец String найден или не ищется. false - конец String не найден, но ищется
-	
-	/* Открывает файл и ищет всё - комментарии, строки, нужно передать название файла */
-	public void findAll(String fileName) { 
-		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) // чтение из файла
-        {
-            String line; // переменная очередной строки
+	public ArrayList<FoundComment> findAllComments(String fileName, ArrayList<FoundComment> comments) { 
+		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            FoundComment comment = new FoundComment();
+            int lineCount=0;
             
-            while((line = br.readLine()) !=null){ // while not the end of the file
-            	System.out.print("Очередная строка: " + line);
-            	findComments(line);
-            	findStrings(line);
-            	System.out.print("\n");
+            while((line = br.readLine())!=null){
+            	lineCount++;
+            	if (comments.isEmpty()==true || comments.get(comments.size()-1).isCompleted()==true) {
+            		comment = findCommentStart(line);
+            		if(!comment.getText().equals("")) {
+            			comment.setLineNumber(lineCount);
+            			comments.add(comment);
+            		}
+            	} else {
+            		comment = findMultilineCommentEnd(line);
+            		comment.setLineNumber(lineCount);
+            		comments.add(comment);
+            	}
             } 
         }
-		catch(FileNotFoundException ex) { // поиск ошибок
+		catch(FileNotFoundException ex) {
 			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
 		}
-        catch(IOException ex){ // поиск ошибок
+        catch(IOException ex) {
             System.err.println("Error reading file '" + fileName + "'");
             System.err.println(ex.getMessage());
         }
+		return comments;
 	}
 	
-	/* Найти комментарии, нужно передать строку которая читается */
-	private void findComments(String line) {
-		if(bool) { // если поиск комментария окончен или поиск не начинался
-			do {
-				indexStart=line.indexOf("//", indexStart+1); // искать комментарий '//'
-				indexOfDoubleDot=line.indexOf("://", indexOfDoubleDot+1); // искать есть ли '://', обычно в ссылках используется (аля https://vk.com)
-			
-				if(indexOfDoubleDot!=-1) // если есть ://
-					indexOfDoubleDot++; // добавить 1, потому что из-за двоеточих, индекс :// и // не совпадет
-				// System.out.println("\nTESTING. IndexStart="+indexStart+" , indexDouble="+indexOfDoubleDot);
-			} while (indexStart!=-1 && indexOfDoubleDot==indexStart); // действия повторяются если находит совпадающие :// и // на случай если после :// есть реальный коммент
-			
-			 
-			if(indexStart!=-1 && indexOfDoubleDot!=indexStart) { // если '//' есть и не совпадает с '://'
-				System.err.print(". Комментарий '//' начинается с индекса = " + indexStart + "");
-			} else { // иначе - искать коммент '/*'
-				indexStart=line.indexOf("/*");
-				indexOfQuotes1=line.indexOf(dm); // индекс открывающей кавычки. используется чтоб система не пугалась str="/*";
-				indexOfQuotes2=line.indexOf(dm, indexOfQuotes1+1); // индекс закрывающей кавычки. используется чтоб система не пугалась str="/*";
-	    		
-				/* если (/*) нашелся, он не находится в кавычках - вывести начало, искать конец комментария */
-				if(indexStart!=-1 && (indexOfQuotes1==-1 || indexOfQuotes1>=indexStart || indexOfQuotes2<=indexStart)) {
-					System.err.print(". Комментарий '/*' начинается с индекса = " + indexStart);
-					indexEnd=findCommentEnd(line); // найти конец комментария в этой строке
-					
-					if(indexEnd!=-1) { // если конец нашелся
-	            		System.err.print(" и '*/' заканчивается на индексе = " + indexEnd);
-	            		indexEnd = -1;
-	            	} else {
-						bool = false; // иначе оставить метку на продолжение поиска конца
-	            	}
-				}
-			}
-    	} else { // если поиск комментария не окончен
-    		indexEnd=findCommentEnd(line); // искать конец комментария в этой строке
-    		countLines++; // прибавить 1 к счету строк между началом и концом
-    		
-    		if(indexEnd!=-1) { // если конец найден
-    			System.err.print(". Комментарий '*/' заканчивается на индексе = " + indexEnd + ", на " + countLines + " строчек(-ки) ниже");
-        		indexEnd = -1; // сбросить индекс конца
-        		countLines = 0; // сбросить количество строк между началом и концом
-        		bool = true; // оставить метку что конец найден
-    		} else // если конец не найден
-    			System.err.print(". Комментарий '/* */' продолжается");
-    	}
-	}
-	
-	/* Найти строки */
-	private void findStrings(String line) {
-		int index1; // индекс '="'
-		int index2; // индекс '= "'
-		int indexEnd; // индекс '";'
-		int indexContinue1; // индекс '" +'
-		int indexContinue2; // индекс '"+'
+	private FoundComment findSingleComment(String line) {
+		FoundComment comment = new FoundComment();
+		int indexStart = -1; // индекс начала комментария
+		int indexOfDoubleDot = -1; // индекс для поиска двоеточих, чтобы не выводить https:// как коммент
+		int indexOf1stQuotes=findQuotes(line);
+		int indexOf2ndQuotes=findQuotes(line, indexOf1stQuotes);
 		
-		if(bool1) {
-			index1=line.indexOf("=" + dm); // найти (="), т.к. разные люди пишут присвоение по разному. Должно также найти и (==")
-			index2=line.indexOf("= " + dm); // найти (= "), т.к. разные люди пишут присвоение по разному. Должно также найти и (== ")
-			indexEnd=findStringEnd(line); // найти конец String в этой строке
-			indexContinue1=findStringContinuation1(line); // найти продолжатель String ("text" +) который используется для переноса
-			indexContinue2=findStringContinuation2(line); // найти продолжатель String ("text"+) который используется для переноса
-
-			// если нашлось (=")
-			if(index1!=-1) {
-				System.err.print(". Здесь есть String, начинается с индекса " + index1);
-				if(indexEnd!=-1) { // если конец на этой же строке
-	        		System.err.print(" и заканчивается на индексе = " + indexEnd);
-	        		indexEnd = -1;
-	        	} else if(indexContinue1!=-1 || indexContinue2!=-1){ // если String не закончен (в конце стоит '" +' или '"+')
-					bool1 = false; // иначе оставить метку на продолжение поиска конца
-	        	} else // если нет ни '";', ни '" +', ни '"+'
-	        		System.err.print(" и, видимо, не заканчивается");
-			}
-        
-			// если нашлось (= ")
-			if(index2!=-1) {
-				System.err.print(". Здесь есть String, начинается с индекса " + index2);
-				if(indexEnd!=-1) { // если конец нашелся
-	        		System.err.print(" и заканчивается на индексе = " + indexEnd);
-	        		indexEnd = -1;
-	        	} else if(indexContinue1!=-1 || indexContinue2!=-1){ // если String не закончен (в конце стоит '" +' или '"+')
-					bool1 = false; // иначе оставить метку на продолжение поиска конца
-	        	} else // если нет ни '";', ни '" +', ни '"+'
-	        		System.err.print(" и, видимо, не заканчивается");
-			}
-		} else { // если продолжается поиск конца комментария
-			indexEnd=findStringEnd(line); // найти конец комментария в этой строке
-    		countLines1++; // прибавить 1 к счету строк
-    		
-    		if(indexEnd!=-1) { // если конец найден
-    			System.err.print(". String заканчивается на индексе = " + indexEnd + ", на " + countLines1 + " строчек(-ки) ниже");
-        		indexEnd = -1; // сбросить индекс конца строки
-        		countLines1 = 0; // сбросить количество строчек
-        		bool1 = true; // оставить метку что конец найден
-    		}
+		do {
+			indexStart=findDoubleSlashCommentStart(line, indexStart);
+			indexOfDoubleDot=findDoubleDotDoubleSlash(line, indexOfDoubleDot);
+		} while (indexStart!=-1 && indexOfDoubleDot==indexStart);
+		 
+		if(indexStart!=-1 && indexOfDoubleDot!=indexStart && (indexStart<indexOf1stQuotes || indexStart>indexOf2ndQuotes)) { // если '//' есть и не совпадает с '://'
+			for(int i=indexStart; i<line.length(); i++) 
+				comment.setText(comment.getText()+line.charAt(i));
+			comment.setIndexStart(indexStart);
+			comment.setIndexEnd(line.length());
 		}
+		
+		return comment;
 	}
 	
-	/* найти продолжение строки (" +), используется в findStrings */
-	private int findStringContinuation1(String line) {
-		int index=line.indexOf(dm + " +");
+	private FoundComment findDocumentationComment(String line) {
+		FoundComment comment = new FoundComment();
+		int indexStart = line.indexOf("/**");; // индекс начала комментария
+		int indexOfQuotes1 = line.indexOf(quotes); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
+		int indexOfQuotes2 = line.indexOf(quotes, indexOfQuotes1+1); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев 
+		int indexEnd = -1; // индекс окончания комментария, если это '/* */'
+		
+		/* если (/*) нашелся и он не находится в кавычках */
+		if(indexStart!=-1 && (indexOfQuotes1==-1 || indexOfQuotes1>=indexStart || indexOfQuotes2<=indexStart)) {
+			for(int i=indexStart; i<line.length(); i++)
+				comment.setText(comment.getText()+line.charAt(i));
+			indexEnd=findMultilineEnd(line, indexStart);
+			comment.setIndexStart(indexStart);
+			
+			if(indexEnd==-1) {
+				comment.setCompleted(false);
+				comment.setIndexEnd(line.length());
+        	}
+			else 
+				comment.setIndexEnd(indexEnd);
+		}
+		
+		return comment;
+	}
+	
+	private FoundComment findMultilineComment(String line) {
+		FoundComment comment = new FoundComment();
+		int indexStart = line.indexOf("/*");; // индекс начала комментария
+		int indexOfQuotes1 = line.indexOf(quotes); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
+		int indexOfQuotes2 = line.indexOf(quotes, indexOfQuotes1+1); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев 
+		int indexEnd = -1; // индекс окончания комментария, если это '/* */'
+		
+		/* если (/*) нашелся и он не находится в кавычках */
+		if(indexStart!=-1 && (indexOfQuotes1==-1 || indexOfQuotes1>=indexStart || indexOfQuotes2<=indexStart)) {
+			for(int i=indexStart; i<line.length(); i++)
+				comment.setText(comment.getText()+line.charAt(i));
+			indexEnd=findMultilineEnd(line, indexStart);
+			comment.setIndexStart(indexStart);
+			
+			if(indexEnd==-1) {
+				comment.setCompleted(false);
+				comment.setIndexEnd(line.length());
+        	}
+			else 
+				comment.setIndexEnd(indexEnd);
+		}
+		
+		return comment;
+	}
+	
+	private FoundComment findCommentStart(String line) {
+		FoundComment comment = new FoundComment();
+		
+		comment = findSingleComment(line);
+		if(comment.getText().equals("")) {
+			comment = findDocumentationComment(line);
+			if(comment.getText().equals("")) {
+				comment = findMultilineComment(line);
+			}
+		}
+		
+		return comment;
+	}
+	
+	private FoundComment findMultilineCommentEnd(String line) {
+		FoundComment comment = new FoundComment(); 
+		int indexEnd = findMultilineEnd(line); // индекс окончания комментария, если это '/* */'
+		
+		if(indexEnd!=-1) { // если конец найден
+			for(int i=0; i<=indexEnd+1; i++)
+				comment.setText(comment.getText()+line.charAt(i));
+			comment.setIndexEnd(indexEnd);
+		} else { // если конец не найден
+			for(int i=0; i<line.length(); i++)
+				comment.setText(comment.getText()+line.charAt(i));
+			comment.setIndexEnd(line.length());
+			comment.setCompleted(false);
+		}
+		return comment;
+	}
+	
+	public ArrayList<FoundString> findAllStrings(String fileName, ArrayList<FoundString> strings) { // TODO
+		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+			String line;
+	        FoundString string = new FoundString();
+            int lineCount=0;
+            
+            while((line = br.readLine())!=null){
+            	lineCount++;
+            	if (strings.isEmpty()==true || strings.get(strings.size()-1).isCompleted()==true) {
+                	string = findStringStart(line);
+                	if(!string.getText().equals("")) {
+                		string.setLineNumber(lineCount);
+                		strings.add(string);
+                	}
+                } else {
+                	string = findStringEnd(line);
+                	string.setLineNumber(lineCount);
+                	strings.add(string);
+                }
+            	
+            	if(lineCount==11) {
+            		System.out.println("Line = "+line+"; String = "+string.getText());
+            	}
+            	
+            	
+            } 
+        }
+		catch(FileNotFoundException ex) {
+			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
+		}
+        catch(IOException ex) {
+            System.err.println("Error reading file '" + fileName + "'");
+            System.err.println(ex.getMessage());
+		}
+		
+		return strings;
+	}
+	
+	private FoundString findStringStart(String line) {
+		FoundString string = new FoundString();
+		int index1=findStringStartWithoutASpace(line); // найти (="), т.к. разные люди пишут присвоение по разному. Должно также найти и (==")
+		int index2=findStringStartWithASpace(line); // найти (= "), т.к. разные люди пишут присвоение по разному. Должно также найти и (== ")
+		int indexDoubleSlash=findDoubleSlashCommentStart(line);
+		int indexEnd=-1;
+				
+		// если нашлось (=")
+		if((index1!=-1 && indexDoubleSlash==-1) || (index1!=-1 && indexDoubleSlash!=-1 && index1<indexDoubleSlash)) {
+			string.setIndexStart(index1);
+			indexEnd=findQuotes(line, index1); // найти конец String в этой строке
+			if(indexEnd!=-1) { // если конец на этой же строке
+    			string.setIndexEnd(indexEnd);
+    			    			
+        		for(int i=index1; i<indexEnd+1; i++)
+        			string.setText(string.getText()+line.charAt(i));
+			}
+		}
+       
+		// если нашлось (= ")
+		if((index2!=-1 && indexDoubleSlash==-1) || (index2!=-1 && indexDoubleSlash!=-1 && index2<indexDoubleSlash)) {
+			string.setIndexStart(index2);
+			indexEnd=findQuotes2(line, index2); // найти конец String в этой строке
+						
+			if(indexEnd!=-1) { // если конец на этой же строке
+    			string.setIndexEnd(indexEnd);
+    			    			
+        		for(int i=index2; i<indexEnd+1; i++)
+        			string.setText(string.getText()+line.charAt(i));
+			}
+		}
+		return string;
+	}
+	
+	private FoundString findStringEnd(String line) {
+		FoundString string = new FoundString();
+		
+		int indexEnd=findStringsEnd(line); // найти конец String в этой строке
+		
+		if(indexEnd!=-1) { // если конец найден
+			string.setIndexEnd(indexEnd);
+			
+			for(int i=0; i<=indexEnd+1; i++)
+				string.setText(string.getText()+line.charAt(i));		
+		}
+		
+		return string;
+	}
+	
+	/* Найти '://' */
+	private int findDoubleDotDoubleSlash(String line, int indexOfDoubleDot) {
+		int index = line.indexOf("://", indexOfDoubleDot+1);
+		
+		if(index!=-1)
+			index++; // добавить 1, потому что из-за двоеточих, индекс :// и // не совпадет
+		return index;
+	}
+	
+	private int findQuotes(String line) {
+		int index = line.indexOf(quotes);
+		return index;
+	}
+	
+	private int findQuotes(String line, int startFrom) { // для поиска закрывающих кавычек после ="
+		int index = line.indexOf(quotes, startFrom+2); // +2, потому что в '="' кавычки на третьем индексе - продолжение не находит
+		return index;
+	}
+	
+	private int findQuotes2(String line, int startFrom) { // для поиска закрывающих кавычек после = "
+		int index = line.indexOf(quotes, startFrom+3); // +3, потому что в '= "' кавычки на третьем индексе - продолжение не находит
+		return index;
+	}
+	
+	private int findDoubleDotDoubleSlash(String line) {
+		int index = line.indexOf("://");
+		
+		if(index!=-1)
+			index++; // добавить 1, потому что из-за двоеточих, индекс :// и // не совпадет
+		return index;
+	}
+	
+	private int findDoubleSlashCommentStart(String line, int indexStart) {
+		int index=line.indexOf("//", indexStart+1);
+		return index;
+	}
+	
+	private int findDoubleSlashCommentStart(String line) {
+		int index=line.indexOf("//");
+		return index;
+	}
+	
+	private int findStringStartWithASpace(String line) {
+		int index=line.indexOf("= " + quotes);
+		return index;
+	}
+	
+	private int findStringStartWithoutASpace(String line) {
+		int index=line.indexOf("=" + quotes);
 		
 		return index;
 	}
 	
-	/* найти продолжение строки ("+), используется в findStrings */
-	private int findStringContinuation2(String line) {
-		int index=line.indexOf(dm + "+");
-		
-		return index;
-	}
-	
-	/* найти конец строки (";), используется в findStrings */
-	private int findStringEnd(String line) {
-		int index=line.indexOf(dm + ";");
+	private int findStringsEnd(String line) {
+		int index=line.indexOf(quotes + ";");
 		
 		return index;
 	}
 
-	// найти конец комментария */, используется в findComments
-	private int findCommentEnd(String line) {
+	private int findMultilineEnd(String line, int indexStart) {
 		int index=line.indexOf("*/", indexStart); // искать в переданной строке конец коммента */
+		
+		return index;
+	}
+	
+	private int findMultilineEnd(String line) {
+		int index=line.indexOf("*/"); // искать в переданной строке конец коммента */
 		
 		return index;
 	}

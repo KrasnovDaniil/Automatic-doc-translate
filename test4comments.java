@@ -22,5 +22,8 @@ String help = "-//-//-//-";
 /* 
 ="rrrr";
 */
-
+stringF="f";
+empty="";
 // http://github.com
+
+str="sdafasdfreqwe+"; // "Втф"+"Мда"="баг"
