@@ -2,12 +2,19 @@ package classes;
 
 public class FoundString {
 	String text = "";
+	String line = "";
 	String translation = "";
 	boolean isCompleted = true;
 	int indexStart = 0;
 	int indexEnd = 0;
 	int lineNumber = 0;
 	
+	public String getLine() {
+		return line;
+	}
+	public void setLine(String line) {
+		this.line = line;
+	}
 	public int getIndexStart() {
 		return indexStart;
 	}

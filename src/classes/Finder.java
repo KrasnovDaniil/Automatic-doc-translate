@@ -23,11 +23,13 @@ public class Finder {
             		comment = findCommentStart(line);
             		if(!comment.getText().equals("")) {
             			comment.setLineNumber(lineCount);
+            			comment.setLine(line);
             			comments.add(comment);
             		}
             	} else {
             		comment = findMultilineCommentEnd(line);
             		comment.setLineNumber(lineCount);
+            		comment.setLine(line);
             		comments.add(comment);
             	}
             } 
@@ -157,19 +159,15 @@ public class Finder {
                 	string = findStringStart(line);
                 	if(!string.getText().equals("")) {
                 		string.setLineNumber(lineCount);
+                		string.setLine(line);
                 		strings.add(string);
                 	}
                 } else {
                 	string = findStringEnd(line);
                 	string.setLineNumber(lineCount);
+                	string.setLine(line);
                 	strings.add(string);
                 }
-            	
-            	if(lineCount==11) {
-            		System.out.println("Line = "+line+"; String = "+string.getText());
-            	}
-            	
-            	
             } 
         }
 		catch(FileNotFoundException ex) {
