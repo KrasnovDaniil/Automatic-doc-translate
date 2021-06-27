@@ -6,5 +6,5 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public interface IReaderService {
-    List<String> Read(String source);
+    StringBuffer Read(String source);
 }

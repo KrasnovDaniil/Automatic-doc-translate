@@ -12,8 +12,8 @@ import java.util.zip.ZipFile;
 public class ZipReader implements IReaderService {
 
     @Override
-    public List<String> Read(String source){
-        List<String> code = new ArrayList<>();
+    public StringBuffer Read(String source){
+        StringBuffer code = new StringBuffer();
         ZipFile zipFile = null;
         try{
             zipFile = new ZipFile(source);
@@ -24,7 +24,7 @@ public class ZipReader implements IReaderService {
         return code;
     }
 
-    private void searchCodeFile(ZipFile zipFile, List<String> code) throws IOException {
+    private void searchCodeFile(ZipFile zipFile, StringBuffer code) throws IOException {
         Enumeration enumeration = zipFile.entries();
         while (enumeration.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) enumeration.nextElement();
@@ -34,11 +34,11 @@ public class ZipReader implements IReaderService {
         }
     }
 
-    private void readAllLines(ZipFile zipFile, ZipEntry entry, List<String> code) throws IOException {
+    private void readAllLines(ZipFile zipFile, ZipEntry entry, StringBuffer code) throws IOException {
         String line = null;
         BufferedReader reader = new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
         while ((line = reader.readLine()) != null) {
-            code.add(line);
+            code.append(line).append("\n");
         }
     }
 }
