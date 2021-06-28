@@ -22,14 +22,30 @@ public class ZipWriter implements IWriterService {
         ZipFile zipSrc = new ZipFile(source);
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destination));
         Enumeration enumeration = zipSrc.entries();
-        while (enumeration.hasMoreElements()){
-            ZipEntry entrySrc = (ZipEntry) enumeration.nextElement();
-            if(!entrySrc.isDirectory()){
-                createNewEntry(zos, zipSrc, entrySrc);
+        if(isJavaProject(enumeration)) {
+            while (enumeration.hasMoreElements()) {
+                ZipEntry entrySrc = (ZipEntry) enumeration.nextElement();
+                if (!entrySrc.isDirectory()) {
+                    createNewEntry(zos, zipSrc, entrySrc);
+                }
             }
+        }
+        else {
+            System.out.println("It's not java project");
         }
 
         zos.close();
+    }
+
+    private boolean isJavaProject(Enumeration enumeration) {
+        while (enumeration.hasMoreElements()){
+            ZipEntry entry = (ZipEntry) enumeration.nextElement();
+            if(!entry.isDirectory() && entry.getName().contains(".java")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void createNewEntry(ZipOutputStream zos, ZipFile zipSrc, ZipEntry entrySrc)
