@@ -1,14 +1,28 @@
 package classes;
 
-public class FoundComment {
+public class SearchResult {
 	String text = "";
 	String line = "";
-	String translation = "";
+	String translation = "!!! ЗДЕСЬ ДОЛЖЕН БЫТЬ ПЕРЕВОД !!!";
 	boolean isCompleted = true;
 	int indexStart = 0;
 	int indexEnd = 0;
 	int lineNumber = 0;
+	int lineNumberEnd = 0;
+	int commentType = 0;
 	
+	public int getLineNumberEnd() {
+		return lineNumberEnd;
+	}
+	public void setLineNumberEnd(int lineNumberEnd) {
+		this.lineNumberEnd = lineNumberEnd;
+	}
+	public int getCommentType() {
+		return commentType;
+	}
+	public void setCommentType(int commentType) {
+		this.commentType = commentType;
+	}
 	public String getLine() {
 		return line;
 	}
