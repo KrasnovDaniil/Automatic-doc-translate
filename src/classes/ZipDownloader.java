@@ -17,7 +17,7 @@ public class ZipDownloader implements IDownloaderService {
         FileOutputStream fileOutputStream = null;
         try {
             readableByteChannel = Channels.newChannel(new URL(source).openStream());
-            fileOutputStream = new FileOutputStream("C:\\Users\\User\\Desktop\\project.zip");
+            fileOutputStream = new FileOutputStream(".\\project.zip");
             fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             System.out.println("File downloaded!");
         } catch (IOException e) {
