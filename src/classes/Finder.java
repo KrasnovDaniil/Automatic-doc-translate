@@ -33,6 +33,7 @@ public class Finder {
             			comment.setLineNumber(lineCount);
             			if(comment.isCompleted()==true) {
             				comment.setLineNumberEnd(lineCount);
+            				// comment.setTranslation(); // TODO вставить код перевода
         					longLine="";
         					wr.writeTranslation(fileName, comment);
         					addAmountOfComments(amounts, comment);
@@ -45,6 +46,7 @@ public class Finder {
             		comment = findMultilineCommentEnd(line, comment);
             		if(comment.isCompleted()==true) {
             			comment.setLineNumberEnd(lineCount);
+            			// comment.setTranslation(); // TODO вставить код перевода
     					longLine = longLine.replace(comment.getText(), comment.getTranslation()); // TODO нужно ли это?
     					longLine="";
     					wr.writeTranslation(fileName, comment);
