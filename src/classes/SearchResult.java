@@ -10,6 +10,9 @@ public class SearchResult {
 	int lineNumber = 0;
 	int lineNumberEnd = 0;
 	int commentType = 0;
+	static final int COMM_SINGLE_LINE = 1;
+	static final int COMM_MULTI_LINE = 2;
+	static final int COMM_DOC = 3;
 	
 	public int getLineNumberEnd() {
 		return lineNumberEnd;

@@ -12,7 +12,7 @@ public class Writer {
 		Path path = Paths.get(fileName);
 		try {
 			Files.write(path, new String(Files.readAllBytes(path), StandardCharsets.UTF_8).replace(result.getText(), result.getTranslation()).getBytes(StandardCharsets.UTF_8));
-			System.out.println("Запись перевода успешно выполнена");
+			System.out.println("Запись перевода в строке №" + result.getLineNumber() + " успешно выполнена");
 		} catch(FileNotFoundException ex) {
 			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
 		} catch(IOException ex) {

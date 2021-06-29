@@ -1,6 +1,8 @@
 package classes;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 // import java.util.ArrayList;
 
 /* Класс для поиска комментариев/String в коде */
@@ -11,9 +13,11 @@ import java.io.*;
 public class Finder {
 	final char quotes = (char) 34; // в этой переменной хранятся кавычки, т.к. не получается писать кавычки в кавычках
 	
-	public void insertTranslation(String fileName){
+	public Map<String, Integer> insertTranslation(String fileName){
+		Map<String, Integer> amounts = new HashMap<String, Integer>();
 		SearchResult comment = new SearchResult();
 		Writer wr = new Writer();
+		amounts.put("SingleComms", 0); amounts.put("MultiComms", 0); amounts.put("DocComms", 0); amounts.put("Total", 0);
 		
 		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -31,6 +35,7 @@ public class Finder {
             				comment.setLineNumberEnd(lineCount);
         					longLine="";
         					wr.writeTranslation(fileName, comment);
+        					addAmountOfComments(amounts, comment);
             			} else {
             				longLine+=line+"\n";
             			}
@@ -43,11 +48,13 @@ public class Finder {
     					longLine = longLine.replace(comment.getText(), comment.getTranslation()); // TODO нужно ли это?
     					longLine="";
     					wr.writeTranslation(fileName, comment);
+    					addAmountOfComments(amounts, comment);
             		} else {
             			longLine+="\n";
             		}
             	}
             } 
+            System.out.println("Перевод и запись успешна!");
             br.close();
         }
 		catch(FileNotFoundException ex) {
@@ -57,7 +64,20 @@ public class Finder {
             System.err.println("Error reading file '" + fileName + "'");
             System.err.println(ex.getMessage());
         }
+		return amounts;
+	}
+	
+	private Map<String, Integer> addAmountOfComments(Map<String, Integer> amounts, SearchResult comment) {
+		amounts.replace("Total", amounts.get("Total")+1);
+		if(comment.getCommentType()==SearchResult.COMM_SINGLE_LINE)
+			amounts.replace("SingleComms", amounts.get("SingleComms")+1);
+		if(comment.getCommentType()==SearchResult.COMM_MULTI_LINE)
+			amounts.replace("MultiComms", amounts.get("MultiComms")+1);
+		if(comment.getCommentType()==SearchResult.COMM_DOC)
+			amounts.replace("DocComms", amounts.get("DocComms")+1);
 		
+		
+		return amounts;
 	}
 	
 	private SearchResult findSingleComment(String line) {
