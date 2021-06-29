@@ -1,7 +1,7 @@
 package classes;
 
 import java.io.*;
-import java.util.ArrayList;
+// import java.util.ArrayList;
 
 /* Класс для поиска комментариев/String в коде */
 
@@ -13,7 +13,6 @@ public class Finder {
 	
 	public void insertTranslation(String fileName){
 		SearchResult comment = new SearchResult();
-		SearchResult string = new SearchResult();
 		Writer wr = new Writer();
 		
 		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -24,26 +23,12 @@ public class Finder {
             while((line = br.readLine())!=null){
             	lineCount++;
             	
-            	string = findStringStart(line);
-            	if(!string.getText().equals("")) {
-        			string.setLineNumber(lineCount);
-        			if(string.isCompleted()==true) {
-        				string.setLineNumberEnd(lineCount);
-        				// TODO do the translate thing
-    					// line = line.replace(string.getText(), string.getTranslation()); // нужно ли это? TODO
-    					wr.writeTranslation(fileName, string);
-    					line.replace(string.getText(), string.getTranslation());
-        			}
-            	}
-            	
             	if (comment.isCompleted()==true) {
             		comment = findCommentStart(line);
             		if(!comment.getText().equals("")) {
             			comment.setLineNumber(lineCount);
             			if(comment.isCompleted()==true) {
             				comment.setLineNumberEnd(lineCount);
-            				// TODO do the translate thing
-        					// line = line.replace(comment.getText(), comment.getTranslation()); // нужно ли это? TODO
         					longLine="";
         					wr.writeTranslation(fileName, comment);
             			} else {
@@ -55,36 +40,13 @@ public class Finder {
             		comment = findMultilineCommentEnd(line, comment);
             		if(comment.isCompleted()==true) {
             			comment.setLineNumberEnd(lineCount);
-    					longLine = longLine.replace(comment.getText(), comment.getTranslation()); // TODO do the string change to translation
-    					System.out.println(longLine);
+    					longLine = longLine.replace(comment.getText(), comment.getTranslation()); // TODO нужно ли это?
     					longLine="";
-    					wr.writeTranslation(fileName, comment);// TODO do the file write thing
+    					wr.writeTranslation(fileName, comment);
             		} else {
             			longLine+="\n";
             		}
             	}
-            	
-            	if(lineCount==29) {
-            		System.out.println("29 строка. String = "+string.getText());
-            		System.out.println("29 строка. Comm = "+comment.getText());
-            	}
-            	
-            	/* if (string.isCompleted()==true) {
-                	string = findStringStart(line);
-                	if(!string.getText().equals("")) {
-                		string.setLineNumber(lineCount);
-                		// string.setLine(line);
-                		// TODO do the translate thing
-    					// TODO do the string change to translation
-                	}
-                } else if (string.isCompleted()==false){
-                	string = findStringEnd(line);
-                	// string.setLineNumber(lineCount);
-                	// string.setLine(line);
-                	string.setLineNumberEnd(lineCount);
-                	// TODO do the translate thing
-					// TODO do the string change to translation
-                } */
             } 
             br.close();
         }
@@ -96,111 +58,6 @@ public class Finder {
             System.err.println(ex.getMessage());
         }
 		
-	}
-	
-	public ArrayList<SearchResult> findAllComments(String fileName, ArrayList<SearchResult> comments) { 
-		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            SearchResult comment = new SearchResult();
-            int lineCount=0;
-            
-            while((line = br.readLine())!=null){
-            	lineCount++;
-            	if (comment.isCompleted()==true) {
-            		comment = findCommentStart(line);
-            		if(!comment.getText().equals("")) {
-            			comment.setLineNumber(lineCount);
-            			if(comment.isCompleted()==true) {
-            				comment.setLineNumberEnd(lineCount);
-            				comments.add(comment);
-            			}
-            		}
-            	} else {
-            		comment = findMultilineCommentEnd(line, comment);
-            		// comment.setLineNumber(lineCount);
-            		// comment.setLine(line);
-            		if(comment.isCompleted()==true) {
-            			comment.setLineNumberEnd(lineCount);
-            			comments.add(comment);
-            		}
-            	}
-            }
-            br.close();
-        }
-		catch(FileNotFoundException ex) {
-			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
-		}
-        catch(IOException ex) {
-            System.err.println("Error reading file '" + fileName + "'");
-            System.err.println(ex.getMessage());
-        }
-		return comments;
-	}
-	
-	public SearchResult findCommFromALine(String fileName, int lineNumber) {
-		SearchResult comment = new SearchResult();
-		
-		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            int lineCount=0;
-            
-            while((line = br.readLine())!=null){
-            	lineCount++;
-            	if(lineCount==lineNumber || comment.isCompleted()==false) {
-            		if (comment.isCompleted()==true) {
-            			comment = findCommentStart(line);
-            			if(!comment.getText().equals("")) {
-            				comment.setLineNumber(lineCount);
-            				// 	comment.setLine(line);
-            				if(comment.isCompleted()==true) {
-            					comment.setLineNumberEnd(lineCount);
-            					// TODO do the translate thing
-            					// TODO do the string change to translation
-            				}
-            			}
-            		} else {
-            			comment = findMultilineCommentEnd(line, comment);
-            			// comment.setLineNumber(lineCount);
-            			// comment.setLine(line);
-            			if(comment.isCompleted()==true) {
-            				comment.setLineNumberEnd(lineCount);
-            				// TODO do the translate thing
-        					// TODO do the multiline string change to translated text
-            			}
-            		}
-            	}
-            } 
-            br.close();
-        }
-		catch(FileNotFoundException ex) {
-			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
-		}
-        catch(IOException ex) {
-            System.err.println("Error reading file '" + fileName + "'");
-            System.err.println(ex.getMessage());
-        }
-		return comment;
-	}
-	
-	public int getAmountOfLinesFromAFile(String fileName) {
-		int amount = 0;
-		
-		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            
-            while((line = br.readLine())!=null){
-            	amount++;
-            } 
-            br.close();
-        }
-		catch(FileNotFoundException ex) {
-			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
-		}
-        catch(IOException ex) {
-            System.err.println("Error reading file '" + fileName + "'");
-            System.err.println(ex.getMessage());
-        }
-		return amount;
 	}
 	
 	private SearchResult findSingleComment(String line) {
@@ -310,90 +167,6 @@ public class Finder {
 		return comment;
 	}
 	
-	public ArrayList<SearchResult> findAllStrings(String fileName, ArrayList<SearchResult> strings) { // TODO
-		try(BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-			String line;
-	        SearchResult string = new SearchResult();
-            int lineCount=0;
-            
-            while((line = br.readLine())!=null){
-            	lineCount++;
-            	if (strings.isEmpty()==true || strings.get(strings.size()-1).isCompleted()==true) {
-                	string = findStringStart(line);
-                	if(!string.getText().equals("")) {
-                		string.setLineNumber(lineCount);
-                		string.setLine(line);
-                		strings.add(string);
-                	}
-                } else {
-                	string = findStringEnd(line);
-                	string.setLineNumber(lineCount);
-                	string.setLine(line);
-                	strings.add(string);
-                }
-            }
-            br.close();
-        }
-		catch(FileNotFoundException ex) {
-			System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
-		}
-        catch(IOException ex) {
-            System.err.println("Error reading file '" + fileName + "'");
-            System.err.println(ex.getMessage());
-		}
-		
-		return strings;
-	}
-	
-	private SearchResult findStringStart(String line) {
-		SearchResult string = new SearchResult();
-		int index1=findStringStartWithoutASpace(line); // найти (="), т.к. разные люди пишут присвоение по разному. Должно также найти и (==")
-		int index2=findStringStartWithASpace(line); // найти (= "), т.к. разные люди пишут присвоение по разному. Должно также найти и (== ")
-		int indexDoubleSlash=findDoubleSlashCommentStart(line);
-		int indexEnd=-1;
-				
-		// если нашлось (=")
-		if((index1!=-1 && indexDoubleSlash==-1) || (index1!=-1 && indexDoubleSlash!=-1 && index1<indexDoubleSlash)) {
-			string.setIndexStart(index1);
-			indexEnd=findQuotes(line, index1); // найти конец String в этой строке
-			if(indexEnd!=-1) { // если конец на этой же строке
-    			string.setIndexEnd(indexEnd);
-    			    			
-        		for(int i=index1; i<indexEnd+1; i++)
-        			string.setText(string.getText()+line.charAt(i));
-			}
-		}
-       
-		// если нашлось (= ")
-		if((index2!=-1 && indexDoubleSlash==-1) || (index2!=-1 && indexDoubleSlash!=-1 && index2<indexDoubleSlash)) {
-			string.setIndexStart(index2);
-			indexEnd=findQuotes2(line, index2); // найти конец String в этой строке
-						
-			if(indexEnd!=-1) { // если конец на этой же строке
-    			string.setIndexEnd(indexEnd);
-    			    			
-        		for(int i=index2; i<indexEnd+1; i++)
-        			string.setText(string.getText()+line.charAt(i));
-			}
-		}
-		return string;
-	}
-	
-	private SearchResult findStringEnd(String line) {
-		SearchResult string = new SearchResult();
-		
-		int indexEnd=findQuoteColon(line); // найти конец String в этой строке
-		
-		if(indexEnd!=-1) { // если конец найден
-			string.setIndexEnd(indexEnd);
-			
-			for(int i=0; i<=indexEnd+1; i++)
-				string.setText(string.getText()+line.charAt(i));		
-		}
-		
-		return string;
-	}
-	
 	/* Найти '://' */
 	private int findDoubleDotDoubleSlash(String line, int indexOfDoubleDot) {
 		int index = line.indexOf("://", indexOfDoubleDot+1);
@@ -413,11 +186,6 @@ public class Finder {
 		return index;
 	}
 	
-	private int findQuotes2(String line, int startFrom) { // для поиска закрывающих кавычек после = "
-		int index = line.indexOf(quotes, startFrom+3); // +3, потому что в '= "' кавычки на третьем индексе - продолжение не находит
-		return index;
-	}
-	
 	private int findDoubleSlashCommentStart(String line, int indexStart) {
 		int index=line.indexOf("//", indexStart+1);
 		return index;
@@ -425,23 +193,6 @@ public class Finder {
 	
 	private int findDoubleSlashCommentStart(String line) {
 		int index=line.indexOf("//");
-		return index;
-	}
-	
-	private int findStringStartWithASpace(String line) {
-		int index=line.indexOf("= " + quotes);
-		return index;
-	}
-	
-	private int findStringStartWithoutASpace(String line) {
-		int index=line.indexOf("=" + quotes);
-		
-		return index;
-	}
-	
-	private int findQuoteColon(String line) {
-		int index=line.indexOf(quotes + ";");
-		
 		return index;
 	}
 
