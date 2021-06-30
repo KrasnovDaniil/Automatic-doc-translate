@@ -1,0 +1,9 @@
+
+/ **  r  n * Какой-то класс для правильной работы  r  n * {@code SourceCode class} цели {@code true} для исходного кода магазина  r  n * @author Daniiil  r  n * @version 1.1  r  n * /
+public class SourceCode {
+
+    / ** \ r \ n * Новый метод \ r \ n * @param text input text \ r \ n * @return output string {@code new String ()} \ r \ n * /
+    public String method1(String text){
+        System.out.println();
+        return null;
+    }

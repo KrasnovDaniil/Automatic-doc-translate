@@ -27,16 +27,19 @@ public class TranslateServiceImpl implements ITranslateService {
     @Override
     public void insertText() {
         // тут будет функционал Евгения для извлечения комментов, доков из исходников
-
     }
 
-    /** translate inserted text using Google Cloud Translate API*/
+    /** translate inserted text using Google Cloud Translate API
+     * @param text input text
+     * */
     @Override
-    public void translateText(String text) {
+    public String translateText(String text) {
         Translation translation = translate.translate(text,
                 Translate.TranslateOption.sourceLanguage(sourceLang),
                 Translate.TranslateOption.targetLanguage(targetLang),
+//                Translate.TranslateOption.model("base"));
                 Translate.TranslateOption.model("nmt"));
         translatedText = translation.getTranslatedText();
+        return translatedText;
     }
 }
