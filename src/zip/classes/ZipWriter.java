@@ -8,19 +8,20 @@ import java.util.*;
 import java.util.zip.*;
 
 public class ZipWriter implements IWriterService {
+    public static final String DESTINATION = ".\\newProject.zip";
 
     @Override
-    public void Write(String source, String destination) {
+    public void Write(String source) {
         try {
-            createZipDir(source, destination);
+            createZipDir(source);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void createZipDir(String source, String destination) throws IOException {
+    private void createZipDir(String source) throws IOException {
         ZipFile zipSrc = new ZipFile(source);
-        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(destination));
+        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(DESTINATION));
         Enumeration enumeration = zipSrc.entries();
         if(isJavaProject(enumeration)) {
             while (enumeration.hasMoreElements()) {

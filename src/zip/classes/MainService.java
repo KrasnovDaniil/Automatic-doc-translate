@@ -19,7 +19,7 @@ public class MainService {
     public void Run(String url, String source){
         if(this.validatorService.validate(url)) {
             this.downloaderService.Download(url);
-            this.writerService.Write(source, ".\\newProject.zip");
+            this.writerService.Write(source);
         }
         else{
             System.out.println("Invalid url");
