@@ -1,6 +1,6 @@
-package classes;
+package zip.classes;
 
-import classes.interfaces.IWriterService;
+import zip.classes.interfeces.IWriterService;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

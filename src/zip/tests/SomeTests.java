@@ -1,7 +1,9 @@
-package test;
+package zip.tests;
 
-import classes.*;
-import org.apache.commons.validator.routines.UrlValidator;
+import zip.classes.MainService;
+import zip.classes.ValidatorUrl;
+import zip.classes.ZipDownloader;
+import zip.classes.ZipWriter;
 
 public class SomeTests {
     public static void main(String[] args) {

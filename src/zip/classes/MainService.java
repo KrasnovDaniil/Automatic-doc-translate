@@ -1,8 +1,8 @@
-package classes;
+package zip.classes;
 
-import classes.interfaces.IDownloaderService;
-import classes.interfaces.IValidatorService;
-import classes.interfaces.IWriterService;
+import zip.classes.interfeces.IDownloaderService;
+import zip.classes.interfeces.IValidatorService;
+import zip.classes.interfeces.IWriterService;
 
 public class MainService {
     private IDownloaderService downloaderService;

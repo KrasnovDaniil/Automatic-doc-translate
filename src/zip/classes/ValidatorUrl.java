@@ -1,6 +1,6 @@
-package classes;
+package zip.classes;
 
-import classes.interfaces.IValidatorService;
+import zip.classes.interfeces.IValidatorService;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.io.IOException;

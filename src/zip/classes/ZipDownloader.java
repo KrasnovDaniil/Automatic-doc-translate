@@ -1,11 +1,9 @@
-package classes;
+package zip.classes;
 
-import classes.interfaces.IDownloaderService;
-import classes.interfaces.IValidatorService;
+import zip.classes.interfeces.IDownloaderService;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;

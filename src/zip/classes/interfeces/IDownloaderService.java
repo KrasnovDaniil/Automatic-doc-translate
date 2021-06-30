@@ -1,6 +1,4 @@
-package classes.interfaces;
-
-import java.io.IOException;
+package zip.classes.interfeces;
 
 public interface IDownloaderService {
     void Download(String source);
