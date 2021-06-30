@@ -1,0 +1,10 @@
+/**
+ * The groovy package is a set of examples that
+ * illustrate the use of javadoc tags.
+ * Note: This package summary, like ALL package
+ * summaries, must be in a file named
+ * <code>package-info.java</code>
+ * @version 1.1
+ * @author Your Name
+ */
+package ADT;
