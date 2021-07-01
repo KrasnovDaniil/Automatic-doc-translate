@@ -19,7 +19,7 @@ public class jGItMainService {
 
     public void Run(String url, String source){
         if(this.validatorService.validate(url)){
-            this.repoCreatorService.CreateRepo(url);
+            this.repoCreatorService.CreateRepo(url, source);
             this.writerService.Write(source);
         }
         else {

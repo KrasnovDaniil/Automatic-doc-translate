@@ -1,5 +1,5 @@
 package jgit.classes.interfaces;
 
 public interface IRepoCreatorService {
-    void CreateRepo(String source);
+    void CreateRepo(String source, String destination);
 }

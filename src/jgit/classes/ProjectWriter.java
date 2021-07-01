@@ -19,7 +19,7 @@ public class ProjectWriter implements IWriterService {
     private void searchJavaFiles(File[] listFiles, String path) throws IOException {
         for(File file:listFiles){
             if(file.isDirectory()){
-                searchJavaFiles(file.listFiles(), file.getAbsolutePath() + file.getName()
+                searchJavaFiles(file.listFiles(), path + file.getName()
                         + File.pathSeparator);
             }
             else{
