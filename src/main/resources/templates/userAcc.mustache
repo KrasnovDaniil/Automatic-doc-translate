@@ -1,0 +1,37 @@
+<head></head>
+<body><div>
+    <div>
+        <main>
+            <div>
+                <div>
+                    <div>
+                        <h1>
+                            <span>
+                                Your repositories
+                            </span>
+                        </h1>
+                    </div>
+                </div>
+
+                <nav>
+                    {{#repos}}
+                        <ul>
+                            <li><a href= rep/{{name}}/ >{{name}}</a>
+                                Stars: {{stars}}
+                                Watchers: {{watchers}}
+                                Forks: {{forks}}
+                                Branches: {{branches}}
+                            </li>
+                        </ul>
+                    {{/repos}}
+                </nav>
+                <form method="post" action= createNewRepo>
+                    <label for="repoName">Repository Name
+                        <input class="input-field" type="text" id="repoName" name="repoName">
+                    </label>
+                    <input type="submit" value="Add repo">
+                </form>
+            </div>
+        </main>
+    </div>
+</div></body>

@@ -1,6 +1,8 @@
 package ADT.services.implementations;
 
 import ADT.models.SearchResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,10 +11,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class Finder {
     final char quotes = (char) 34; // в этой переменной хранятся кавычки, т.к. не получается писать кавычки в кавычках
     private TranslateServiceImpl translateService;
 
+    @Autowired
     public Finder(TranslateServiceImpl translateService){
         this.translateService = translateService;
     }

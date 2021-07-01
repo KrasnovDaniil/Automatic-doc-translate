@@ -63,10 +63,10 @@ public class SearchResult {
         return translation;
     }
     public void setTranslation(TranslateServiceImpl tSimpl) {
-        String text1 = StringEscapeUtils.escapeJava(text);
-        text1 = StringEscapeUtils.escapeJava(text1);
-        this.translation = tSimpl.translateText(text1);
-        this.translation = StringEscapeUtils.unescapeJava(translation);
+//        String text1 = StringEscapeUtils.escapeJava(text);
+//        text1 = StringEscapeUtils.escapeJava(text1);
+        this.translation = tSimpl.translateText(text);
+//        this.translation = StringEscapeUtils.unescapeJava(translation);
     }
     public boolean isCompleted() {
         return isCompleted;
