@@ -1,0 +1,49 @@
+package ADT.models;
+package ADT.models;
+
+/**
+ * Some class for proper work
+ * {@code SourceCode class} purposes {@code true} for store source code
+ * @author Daniiil
+ * @version 1.1
+ */
+public class SourceCode {
+
+    /**
+     * New method
+     * @param text input text
+     * @return output string {@code new String()}
+     */
+    public String method1(String text){
+        System.out.println();
+        return null;
+    }
+
+    /**
+     * Second method
+     * {@literal Literal something}
+     */
+    public void method2(){
+        System.out.println();
+    }
+
+}
+package some_tests.test_folder;
+
+
+/ ** Пример 1 кода \ r \ n * Некоторый класс для правильной работы \ r \ n * {@code SourceCode class} цели {@code true} для исходного кода магазина \ r \ n * @author Даниил \ r \ n * @ версия 1.1 \ r \ n * /
+public class sample1 {
+
+    / ** \ r \ n * Новый метод \ r \ n * @param text input text \ r \ n * @return output string {@code new String ()} \ r \ n * /
+    public String method1(String text){
+        System.out.println();
+        return null;
+    }
+
+    / ** \ r \ n * Второй метод \ r \ n * {@literal Literal something} \ r \ n * /
+    public void method2(){
+        System.out.println();
+    }
+
+}
+
