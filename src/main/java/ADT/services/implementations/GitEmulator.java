@@ -68,7 +68,6 @@ public class GitEmulator implements IGitService {
     @Override
     public String createPullRequest(String directory) {
         String url = null;
-
         return url;
     }
 }
