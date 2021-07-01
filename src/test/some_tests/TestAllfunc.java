@@ -10,8 +10,8 @@ public class TestAllfunc {
     public void testAll(){
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
         Finder finder = new Finder(translateService);
-        new GitMainService(new GitEmulator("KrasnovDaniil", "HarrisTeeter12"),
+        new GitMainService(new GitEmulator("свой_ник_гита", "пароль"),
                 new ValidatorUrl(), new ProjectWriter(translateService, finder))
-                .Run("https://github.com/KrasnovDaniil/Automatic-doc-translate", "C:\\Users\\Daniil\\Desktop\\test");
+                .Run("ссылка на любой репо с комментами", "путь куда склонировать");
     }
 }
