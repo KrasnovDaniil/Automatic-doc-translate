@@ -24,7 +24,7 @@ public class ProjectWriter implements IWriterService {
             }
             else{
                 if(file.getName().contains(".java")){
-                    translateComments(path);
+                    translateComments(path + file.getName());
                 }
             }
         }
