@@ -13,7 +13,16 @@ public class Writer {
     public void writeTranslation(String fileName, SearchResult result){
         Path path = Paths.get(fileName);
         try {
-            Files.write(path, new String(Files.readAllBytes(path), StandardCharsets.UTF_8).replace(result.getText(), result.getTranslation()).getBytes(StandardCharsets.UTF_8));
+            String whole_text = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+//            if (longComment.equals(result.getText().replaceAll("\r\n","\n"))) {
+//                System.out.println("WOOOOOW");
+//            }
+            String from = result.getText().replaceAll("\r\n","\n");
+            String to = result.getTranslation();
+
+            String after_replace = whole_text.replace(from, to);
+
+            Files.write(path, after_replace.getBytes(StandardCharsets.UTF_8));
             System.out.println("Запись перевода в строке №" + result.getLineNumber() + " успешно выполнена");
         } catch(FileNotFoundException ex) {
             System.err.println("Unable to open file '" + fileName + "'. It probably doesn't exist or has a different name");
@@ -22,4 +31,10 @@ public class Writer {
             System.err.println(ex.getMessage());
         }
     }
+    private String longComment = "/**\n" +
+            " * Some class for proper work\n" +
+            " * {@code SourceCode class} purposes {@code true} for store source code\n" +
+            " * @author Daniiil\n" +
+            " * @version 1.1\n" +
+            " */";
 }

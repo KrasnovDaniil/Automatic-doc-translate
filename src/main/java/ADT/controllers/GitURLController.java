@@ -3,15 +3,14 @@ package ADT.controllers;
 import ADT.services.implementations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Controller
-@RequestMapping("git_repo")
+@RequestMapping("git")
 public class GitURLController {
 
     private TranslateServiceImpl translateService;
@@ -23,8 +22,14 @@ public class GitURLController {
         this.finder = finder;
     }
 
-    @GetMapping("/{URL}")
-    public String translateGitRepoDocs(@PathVariable(name = "URL") String repoURL){
+    @GetMapping("/{url}")
+    public String func(@PathVariable(name = "url") String url){
+        System.out.println("url");
+        return "index";
+    }
+
+    @PostMapping("/FindAndTranslate")
+    public String translateGitRepoDocs(Model model){
 //        String fileName = "C:\\Users\\Daniil\\Desktop\\refactoredGUI\\src\\main\\java\\ADT\\textSamples";
 //        Map<String, Integer> stats = new HashMap<String, Integer>();
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
@@ -35,14 +40,10 @@ public class GitURLController {
                 .Run("https://github.com/KrasnovDaniil/Automatic-doc-translate", "C:\\Users\\Daniil\\Desktop\\test");
 //        stats = finder.insertTranslation(fileName);
         System.out.println("Translation complete!");
-//        return "/mainMenu.html";
         return "index";
     }
 
-    @GetMapping("")
-    public void someFunc(){
-        System.out.println("here");
-    }
+
 
 
 }
