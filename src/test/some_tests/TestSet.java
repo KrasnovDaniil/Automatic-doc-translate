@@ -27,14 +27,12 @@ class TestSet {
             input = input.replaceAll("(<rrr>)", "\r");
             input = input.replaceAll("(<docBeg>)", "/**");
             input = input.replaceAll("(<docEnd>)", "*/");
-
         }
         else{
             input = input.replaceAll("\\n", "<nnn>");
             input = input.replaceAll("\\r", "<rrr>");
             input = input.replaceAll("/\\*\\*", "<docBeg>");
             input = input.replaceAll("\\*/", "<docEnd>");
-
         }
         return input;
     }

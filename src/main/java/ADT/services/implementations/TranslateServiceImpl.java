@@ -37,14 +37,14 @@ public class TranslateServiceImpl implements ITranslateService {
      * */
     @Override
     public String translateText(String text) {
-//        text = escape2html(text, false);
+        text = escape2html(text, false);
         Translation translation = translate.translate(text,
                 Translate.TranslateOption.sourceLanguage(sourceLang),
                 Translate.TranslateOption.targetLanguage(targetLang),
 //                Translate.TranslateOption.model("base"));
                 Translate.TranslateOption.model("nmt"));
         translatedText = translation.getTranslatedText();
-//        translatedText = escape2html(translatedText, true);
+        translatedText = escape2html(translatedText, true);
         return translatedText;
     }
 
