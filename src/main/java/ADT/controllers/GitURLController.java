@@ -4,13 +4,10 @@ import ADT.services.implementations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("git")
+@RequestMapping("")
 public class GitURLController {
 
     private TranslateServiceImpl translateService;
@@ -22,25 +19,32 @@ public class GitURLController {
         this.finder = finder;
     }
 
-    @GetMapping("/{url}")
-    public String func(@PathVariable(name = "url") String url){
-        System.out.println("url");
+    @GetMapping("")
+    public String func(){
+        System.out.println("here");
         return "index";
     }
 
     @PostMapping("/FindAndTranslate")
-    public String translateGitRepoDocs(Model model){
+        public String translateGitRepoDocs(@ModelAttribute("githubUrl") String githubUrl,
+                                           @ModelAttribute("login") String login,
+                                           @ModelAttribute("password") String password,
+                                           Model model){
 //        String fileName = "C:\\Users\\Daniil\\Desktop\\refactoredGUI\\src\\main\\java\\ADT\\textSamples";
 //        Map<String, Integer> stats = new HashMap<String, Integer>();
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
         Finder finder = new Finder(translateService);
 
-//        new GitMainService(new GitEmulator("KrasnovDaniil", "HarrisTeeter12"),
-//                new ValidatorUrl(), new ProjectWriter(translateService, finder))
-//                .Run("https://github.com/KrasnovDaniil/Automatic-doc-translate", "C:\\Users\\Daniil\\Desktop\\test");
+        new GitMainService(new GitEmulator(login, password),
+                new ValidatorUrl(), new ProjectWriter(translateService, finder))
+                .Run(githubUrl,"C:\\Users\\Daniil\\Desktop\\test");
+
 //        stats = finder.insertTranslation(fileName);
         System.out.println("Translation complete!");
-        return "index";
+        model.addAttribute("pr_link", "https://github.com/KrasnovDaniil");
+        model.addAttribute("time_spent", "");
+        model.addAttribute("comments_amount", "");
+        return "success";
     }
 
 
