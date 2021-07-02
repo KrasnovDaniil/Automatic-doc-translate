@@ -21,7 +21,7 @@
 		</tr>
 		<tr>
 			<td class="right">Перевод занял </td>
-			<td class="left">${time_spent}</td><br>
+			<td class="left">${time_spent} сек.</td><br>
 		</tr>
 	</table>
 	<a href="${pr_link}" class="center">Ссылка на pull request</a>

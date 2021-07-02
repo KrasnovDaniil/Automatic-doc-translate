@@ -34,16 +34,20 @@ public class GitURLController {
 //        Map<String, Integer> stats = new HashMap<String, Integer>();
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
         Finder finder = new Finder(translateService);
+        ProjectWriter projectWriter = new ProjectWriter(translateService, finder);
+
+        long start_time = System.currentTimeMillis();
 
         new GitMainService(new GitEmulator(login, password),
-                new ValidatorUrl(), new ProjectWriter(translateService, finder))
+                new ValidatorUrl(), projectWriter)
                 .Run(githubUrl,"C:\\Users\\Daniil\\Desktop\\test");
 
+        long finish_time = System.currentTimeMillis();
 //        stats = finder.insertTranslation(fileName);
         System.out.println("Translation complete!");
         model.addAttribute("pr_link", "https://github.com/KrasnovDaniil");
-        model.addAttribute("time_spent", "");
-        model.addAttribute("comments_amount", "");
+        model.addAttribute("time_spent", (finish_time-start_time)/1000);
+        model.addAttribute("comments_amount", projectWriter.getTotal_comments());
         return "success";
     }
 

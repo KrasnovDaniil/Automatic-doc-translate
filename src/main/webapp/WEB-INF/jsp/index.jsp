@@ -5,13 +5,13 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Перевод документации Java проектов</title>
+	<title>Перевод документации Java проектов </title>
 	<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 
 <body>
 <div class="header">
-	<h1>ПЕРЕВОД ДОКУМЕНТАЦИИ JAVA ПРОЕКТОВ</h1>
+	<h1>Перевод документации Java проектов <br> ПеJaК </h1>
 </div> <!-- header ender -->
 
 <div class="contents">
