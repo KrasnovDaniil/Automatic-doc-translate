@@ -30,22 +30,20 @@ public class GitURLController {
                                            @ModelAttribute("login") String login,
                                            @ModelAttribute("password") String password,
                                            Model model){
-//        String fileName = "C:\\Users\\Daniil\\Desktop\\refactoredGUI\\src\\main\\java\\ADT\\textSamples";
-//        Map<String, Integer> stats = new HashMap<String, Integer>();
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
         Finder finder = new Finder(translateService);
         ProjectWriter projectWriter = new ProjectWriter(translateService, finder);
+        GitEmulator gitEmulator = new GitEmulator(login, password);
 
         long start_time = System.currentTimeMillis();
 
-        new GitMainService(new GitEmulator(login, password),
-                new ValidatorUrl(), projectWriter)
+        new GitMainService(gitEmulator,new ValidatorUrl(), projectWriter)
                 .Run(githubUrl,"C:\\Users\\Daniil\\Desktop\\test");
 
         long finish_time = System.currentTimeMillis();
 //        stats = finder.insertTranslation(fileName);
         System.out.println("Translation complete!");
-        model.addAttribute("pr_link", "https://github.com/KrasnovDaniil");
+        model.addAttribute("pr_link", gitEmulator.getBranchLink());
         model.addAttribute("time_spent", (finish_time-start_time)/1000);
         model.addAttribute("comments_amount", projectWriter.getTotal_comments());
         return "success";

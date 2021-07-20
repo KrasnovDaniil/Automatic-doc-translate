@@ -26,11 +26,6 @@ public class TranslateServiceImpl implements ITranslateService {
         this.translate = TranslateOptions.getDefaultInstance().getService();
     }
 
-    /** insert text from source code */
-    @Override
-    public void insertText() {
-        // тут будет функционал Евгения для извлечения комментов, доков из исходников
-    }
 
     /** translate inserted text using Google Cloud Translate API
      * @param text input text
