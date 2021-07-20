@@ -14,9 +14,9 @@ public class Writer {
         Path path = Paths.get(fileName);
         try {
             String whole_text = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
-//            if (longComment.equals(result.getText().replaceAll("\r\n","\n"))) {
-//                System.out.println("WOOOOOW");
-//            }
+// if (longComment.equals (result.getText (). replaceAll (&quot;\ r \ n&quot;, &quot;\ n&quot;))) {
+// System.out.println (&quot;WOOOOOW&quot;);
+//}
             String from = result.getText().replaceAll("\r\n","\n");
             String to = result.getTranslation();
 

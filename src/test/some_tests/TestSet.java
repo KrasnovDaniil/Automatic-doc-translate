@@ -18,15 +18,15 @@ import java.util.Map;
 
 class TestSet {
     private Translate translate;
-//    @Autowired
-//    private TranslateServiceImpl translateService;
+// @Autowired
+// частный TranslateServiceImpl translateService;
 
     private String escape2html(String input, boolean isHtml){
         if (isHtml) {
             input = input.replaceAll("(<nnn>)", "\n");
             input = input.replaceAll("(<rrr>)", "\r");
-            input = input.replaceAll("(<docBeg>)", "/**");
-            input = input.replaceAll("(<docEnd>)", "*/");
+            input = input.replaceAll("(<docBeg>)", "/**&quot;);
+ input = input.replaceAll (&quot;(*/ ) &quot;,&quot;*/");
         }
         else{
             input = input.replaceAll("\\n", "<nnn>");
@@ -41,7 +41,7 @@ class TestSet {
     public void testReplace(){
         String normInput = "/** Просто документа\n ция на русском\n Да! */";
         String input = "/ ** Пример 3 файла кода \\ r <br> * Какой-то класс для правильной работы \\ r <br> * {@code SourceCode class} ";
-//        String input = "/ ** Пример 3 файла кода \\ r \\ n * Какой-то класс для правильной работы \\ r \\ n * {@code SourceCode class} ";
+// Строка input = &quot;/ ** Пример 3 файла кода \\ r \\ n * Какой-то класс правильной работы \\ r \\ n * {@code SourceCode class}&quot;;
         System.out.println(normInput);
         normInput = escape2html(normInput, false);
         Translation translation =
@@ -85,7 +85,7 @@ class TestSet {
         String folder_path = "C:\\Users\\Daniil\\Desktop\\test";
         Map<String, Integer> stats = new HashMap<String, Integer>();
         new ProjectWriter(translateService, finder).Write(folder_path);
-//        stats = finder.insertTranslation(fileName);
+// статистика = finder.insertTranslation (fileName);
         System.out.println("Translation complete!");
     }
 

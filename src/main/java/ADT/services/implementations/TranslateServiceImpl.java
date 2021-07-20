@@ -27,16 +27,16 @@ public class TranslateServiceImpl implements ITranslateService {
     }
 
 
-    /** translate inserted text using Google Cloud Translate API
-     * @param text input text
-     * */
+    /**переводить вставленный текст с помощью Google Cloud Translate API
+ * @param текст для ввода текста
+ **/
     @Override
     public String translateText(String text) {
         text = escape2html(text, false);
         Translation translation = translate.translate(text,
                 Translate.TranslateOption.sourceLanguage(sourceLang),
                 Translate.TranslateOption.targetLanguage(targetLang),
-//                Translate.TranslateOption.model("base"));
+// Translate.TranslateOption.model (&quot;base&quot;));
                 Translate.TranslateOption.model("nmt"));
         translatedText = translation.getTranslatedText();
         translatedText = escape2html(translatedText, true);
@@ -47,8 +47,8 @@ public class TranslateServiceImpl implements ITranslateService {
         if (isHtml) {
             input = input.replaceAll("(<nnn>)", "\n");
             input = input.replaceAll("(<rrr>)", "\r");
-            input = input.replaceAll("(<docBeg>)", "/**");
-            input = input.replaceAll("(<docEnd>)", "*/");
+            input = input.replaceAll("(<docBeg>)", "/**&quot;);
+ input = input.replaceAll (&quot;(*/ ) &quot;,&quot;*/");
 
         }
         else{

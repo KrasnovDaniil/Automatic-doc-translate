@@ -41,7 +41,7 @@ public class GitURLController {
                 .Run(githubUrl,"C:\\Users\\Daniil\\Desktop\\test");
 
         long finish_time = System.currentTimeMillis();
-//        stats = finder.insertTranslation(fileName);
+// статистика = finder.insertTranslation (fileName);
         System.out.println("Translation complete!");
         model.addAttribute("pr_link", gitEmulator.getBranchLink());
         model.addAttribute("time_spent", (finish_time-start_time)/1000);

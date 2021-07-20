@@ -34,8 +34,8 @@ public class TestAllfunc {
     }
 
     /**
-     * Тестирование без клонирования репо, а просто с передачей пути к нужным файлам
-     */
+* Тестирование без клонирования репо, а просто с передачей пути к нужным файлам
+*/
     @Test
     public void testWithoutCloneRepo(){
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
@@ -43,10 +43,10 @@ public class TestAllfunc {
         new GitMainService(new GitEmulator("KrasnovDaniil", "HarrisTeeter12"),
                 new ValidatorUrl(), new ProjectWriter(translateService, finder))
                 .Run("https://github.com/KrasnovDaniil/Automatic-doc-translate", "C:\\Users\\Daniil\\Desktop\\test");
-//        stats = finder.insertTranslation(fileName);
-//        new GitMainService(new GitEmulator("свой_ник_гита", "пароль"),
-//                new ValidatorUrl(), new ProjectWriter(translateService, finder))
-//                .Run("ссылка на любой репо с комментами", "C:\\Users\\Daniil\\Desktop\\test");
+// статистика = finder.insertTranslation (fileName);
+// новый GitMainService (новый GitEmulator (&quot;свой_ник_гита&quot;, &quot;пароль&quot;),
+// новый ValidatorUrl (), новый ProjectWriter (translateService, finder))
+// .Run (&quot;ссылка на любой репо с комментариями&quot;, &quot;C: \\ Users \\ Daniil \\ Desktop \\ test&quot;);
     }
 
     @Test

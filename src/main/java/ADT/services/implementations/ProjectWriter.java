@@ -53,7 +53,7 @@ public class ProjectWriter implements IWriterService {
     }
 
     private int translateComments(String path) {
-        //первод комментов
+        // первод комментов
         Map<String, Integer> stats = new HashMap<String, Integer>();
         stats = this.finder.insertTranslation(path);
         System.out.println();

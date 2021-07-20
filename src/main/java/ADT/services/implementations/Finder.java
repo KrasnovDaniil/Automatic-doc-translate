@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Service
 public class Finder {
-    final char quotes = (char) 34; // в этой переменной хранятся кавычки, т.к. не получается писать кавычки в кавычках
+    final char quotes = (char) 34; // в этой хранятся кавычки, т.к. не получается писать кавычки в кавычках
     private TranslateServiceImpl translateService;
 
     @Autowired
@@ -41,7 +41,7 @@ public class Finder {
                         comment.setLineNumber(lineCount);
                         if(comment.isCompleted()==true) {
                             comment.setLineNumberEnd(lineCount);
-                            // comment.setTranslation(); // TODO вставить код перевода
+                            // comment.setTranslation (); // TODO вставить код перевода
                             comment.setTranslation(translateService);
                             longLine="";
                             wr.writeTranslation(fileName, comment);
@@ -55,7 +55,7 @@ public class Finder {
                     comment = findMultilineCommentEnd(line, comment);
                     if(comment.isCompleted()==true) {
                         comment.setLineNumberEnd(lineCount);
-                        // comment.setTranslation(); // TODO вставить код перевода
+                        // comment.setTranslation (); // TODO вставить код перевода
                         comment.setTranslation(translateService);
                         longLine = longLine.replace(comment.getText(), comment.getTranslation()); // TODO нужно ли это?
                         longLine="";
@@ -94,7 +94,7 @@ public class Finder {
     private SearchResult findSingleComment(String line) {
         SearchResult comment = new SearchResult();
         int indexStart = -1; // индекс начала комментария
-        int indexOfDoubleDot = -1; // индекс для поиска двоеточих, чтобы не выводить https:// как коммент
+        int indexOfDoubleDot = -1; // индекс для поиска двоеточих, чтобы не выводить https: // как коммент
         int indexOf1stQuotes=findQuotes(line);
         int indexOf2ndQuotes=findQuotes(line, indexOf1stQuotes);
 
@@ -103,7 +103,7 @@ public class Finder {
             indexOfDoubleDot=findDoubleDotDoubleSlash(line, indexOfDoubleDot);
         } while (indexStart!=-1 && indexOfDoubleDot==indexStart);
 
-        if(indexStart!=-1 && indexOfDoubleDot!=indexStart && (indexStart<indexOf1stQuotes || indexStart>indexOf2ndQuotes)) { // если '//' есть и не совпадает с '://'
+        if(indexStart!=-1 && indexOfDoubleDot!=indexStart && (indexStart<indexOf1stQuotes || indexStart>indexOf2ndQuotes)) { // если &#39;//&#39; есть и не совпадает с &#39;: //&#39;
             for(int i=indexStart; i<line.length(); i++)
                 comment.setText(comment.getText()+line.charAt(i));
             comment.setIndexStart(indexStart);
@@ -118,11 +118,11 @@ public class Finder {
     private SearchResult findDocumentationComment(String line) {
         SearchResult comment = new SearchResult();
         int indexStart = line.indexOf("/**");; // индекс начала комментария
-        int indexOfQuotes1 = line.indexOf(quotes); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
-        int indexOfQuotes2 = line.indexOf(quotes, indexOfQuotes1+1); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
-        int indexEnd = -1; // индекс окончания комментария, если это '/* */'
+        int indexOfQuotes1 = line.indexOf(quotes); // индекс первых кавычек, используется для проверки - не пишется ли / * в кавычках - чтоб не ломало поиск комментариев
+        int indexOfQuotes2 = line.indexOf(quotes, indexOfQuotes1+1); // индекс первых кавычек, используется для проверки - не пишется ли / * в кавычках - чтоб не ломало поиск комментариев
+        int indexEnd = -1; // индекс окончания комментария, если это &#39;/ **/ &#39;
 
-        /* если (/**) нашелся и он не находится в кавычках */
+        /* если (/**) нашелся и он не находится в кавычках*/
         if(indexStart!=-1 && (indexOfQuotes1==-1 || indexOfQuotes1>=indexStart || indexOfQuotes2<=indexStart)) {
             for(int i=indexStart; i<line.length(); i++)
                 comment.setText(comment.getText()+line.charAt(i));
@@ -143,11 +143,11 @@ public class Finder {
     private SearchResult findMultilineComment(String line) {
         SearchResult comment = new SearchResult();
         int indexStart = line.indexOf("/*");; // индекс начала комментария
-        int indexOfQuotes1 = line.indexOf(quotes); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
-        int indexOfQuotes2 = line.indexOf(quotes, indexOfQuotes1+1); // индекс первых кавычек, используется для проверки - не пишется ли /* в кавычках - чтоб не ломало поиск комментариев
-        int indexEnd = -1; // индекс окончания комментария, если это '/* */'
+        int indexOfQuotes1 = line.indexOf(quotes); // индекс первых кавычек, используется для проверки - не пишется ли / * в кавычках - чтоб не ломало поиск комментариев
+        int indexOfQuotes2 = line.indexOf(quotes, indexOfQuotes1+1); // индекс первых кавычек, используется для проверки - не пишется ли / * в кавычках - чтоб не ломало поиск комментариев
+        int indexEnd = -1; // индекс окончания комментария, если это &#39;/ **/ &#39;
 
-        /* если (/*) нашелся и он не находится в кавычках */
+        / * если (/ *) нашелся и он не находится в кавычках*/
         if(indexStart!=-1 && (indexOfQuotes1==-1 || indexOfQuotes1>=indexStart || indexOfQuotes2<=indexStart)) {
             for(int i=indexStart; i<line.length(); i++)
                 comment.setText(comment.getText()+line.charAt(i));
@@ -198,12 +198,12 @@ public class Finder {
         return comment;
     }
 
-    /* Найти '://' */
+    / * Найти &#39;: //&#39;*/
     private int findDoubleDotDoubleSlash(String line, int indexOfDoubleDot) {
         int index = line.indexOf("://", indexOfDoubleDot+1);
 
         if(index!=-1)
-            index++; // добавить 1, потому что из-за двоеточих, индекс :// и // не совпадет
+            index++; // добавить 1, потому что из-за двоеточих, индекс: // и // не совпадет
         return index;
     }
 
@@ -212,8 +212,8 @@ public class Finder {
         return index;
     }
 
-    private int findQuotes(String line, int startFrom) { // для поиска закрывающих кавычек после ="
-        int index = line.indexOf(quotes, startFrom+2); // +2, потому что в '="' кавычки на третьем индексе - продолжение не находит
+    private int findQuotes(String line, int startFrom) { // для поиска закрывающих кавычек после = &quot;
+        int index = line.indexOf(quotes, startFrom+2); // +2, потому что в &#39;= &quot;&#39; кавычки на третьем индексе - продолжение не находит
         return index;
     }
 
@@ -228,13 +228,13 @@ public class Finder {
     }
 
     private int findStarSlash(String line, int indexStart) {
-        int index=line.indexOf("*/", indexStart); // искать в переданной строке конец коммента */
+        int index=line.indexOf("*/", indexStart); // искать в переданной строке конец комментария*/
 
         return index;
     }
 
     private int findStarSlash(String line) {
-        int index=line.indexOf("*/"); // искать в переданной строке конец коммента */
+        int index=line.indexOf("*/"); // искать в переданной строке конец комментария*/
 
         return index;
     }
