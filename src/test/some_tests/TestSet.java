@@ -27,14 +27,12 @@ class TestSet {
             input = input.replaceAll("(<rrr>)", "\r");
             input = input.replaceAll("(<docBeg>)", "/**");
             input = input.replaceAll("(<docEnd>)", "*/");
-
         }
         else{
             input = input.replaceAll("\\n", "<nnn>");
             input = input.replaceAll("\\r", "<rrr>");
             input = input.replaceAll("/\\*\\*", "<docBeg>");
             input = input.replaceAll("\\*/", "<docEnd>");
-
         }
         return input;
     }
@@ -84,7 +82,7 @@ class TestSet {
     void testTranslateDirectories() {
         TranslateServiceImpl translateService = new TranslateServiceImpl("en", "ru");
         Finder finder = new Finder(translateService);
-        String folder_path = "C:\\Users\\Daniil\\Desktop\\refactoredGUI\\src\\test\\some_tests\\test_folder";
+        String folder_path = "C:\\Users\\Daniil\\Desktop\\test";
         Map<String, Integer> stats = new HashMap<String, Integer>();
         new ProjectWriter(translateService, finder).Write(folder_path);
 //        stats = finder.insertTranslation(fileName);

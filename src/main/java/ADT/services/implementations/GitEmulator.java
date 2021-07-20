@@ -16,6 +16,7 @@ public class GitEmulator implements IGitService {
 
     private String login;
     private String password;
+    private String repoUrl;
 
     public GitEmulator(String login, String password){
         this.login = login;
@@ -24,8 +25,9 @@ public class GitEmulator implements IGitService {
 
     @Override
     public void initRepoAndNewBranch(String source, String destination) {
+        repoUrl = source;
         try {
-            File dir = new File(destination);//на сервере
+            File dir = new File(destination);
 
             CloneCommand clone = Git.cloneRepository();
             clone.setDirectory(dir);
@@ -68,7 +70,10 @@ public class GitEmulator implements IGitService {
     @Override
     public String createPullRequest(String directory) {
         String url = null;
-
         return url;
+    }
+
+    public String getBranchLink(){
+        return repoUrl + "/tree/translated_project";
     }
 }

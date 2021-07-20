@@ -15,7 +15,7 @@ public class ProjectWriter implements IWriterService {
     private TranslateServiceImpl translateService;
     @Autowired
     private Finder finder;
-
+    private int total_comments;
 
     public ProjectWriter() {
     }
@@ -23,6 +23,7 @@ public class ProjectWriter implements IWriterService {
     public ProjectWriter(TranslateServiceImpl translateService, Finder finder) {
         this.translateService = translateService;
         this.finder = finder;
+        total_comments = 0;
     }
 
     @Override
@@ -36,6 +37,7 @@ public class ProjectWriter implements IWriterService {
     }
 
     private void searchJavaFiles(File[] listFiles, String path) throws IOException {
+
         for(File file:listFiles){
             if(file.isDirectory()){
                 String pppp = file.getPath();
@@ -44,16 +46,21 @@ public class ProjectWriter implements IWriterService {
             }
             else{
                 if(file.getName().contains(".java")){
-                    translateComments(file.getPath());
+                    total_comments += translateComments(file.getPath());
                 }
             }
         }
     }
 
-    private void translateComments(String path) {
+    private int translateComments(String path) {
         //первод комментов
         Map<String, Integer> stats = new HashMap<String, Integer>();
         stats = this.finder.insertTranslation(path);
         System.out.println();
+        return stats.get("Total");
+    }
+
+    public int getTotal_comments(){
+        return total_comments;
     }
 }

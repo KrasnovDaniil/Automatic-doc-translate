@@ -11,19 +11,18 @@ public class GitMainService {
 
     public GitMainService(IGitService gitService,
                           IValidatorService validatorService,
-                          IWriterService writerService){
+                          IWriterService writerService) {
         this.gitService = gitService;
         this.validatorService = validatorService;
         this.writerService = writerService;
     }
 
-    public void Run(String url, String directory){
-        if(this.validatorService.validate(url)){
+    public void Run(String url, String directory) {
+        if (this.validatorService.validate(url)) {
             this.gitService.initRepoAndNewBranch(url, directory);
             this.writerService.Write(directory);
             this.gitService.commitAndPush(directory);
-        }
-        else {
+        } else {
             System.out.println("Invalid url");
         }
     }

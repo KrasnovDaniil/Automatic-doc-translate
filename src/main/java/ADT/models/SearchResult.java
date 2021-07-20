@@ -1,22 +1,28 @@
 package ADT.models;
 
 import ADT.services.implementations.TranslateServiceImpl;
-import org.apache.commons.text.StringEscapeUtils;
 
 public class SearchResult {
-    String text = "";
-    String line = "";
-    String translation = "!!! ЗДЕСЬ ДОЛЖЕН БЫТЬ ПЕРЕВОД !!!";
-    boolean isCompleted = true;
-    int indexStart = 0;
-    int indexEnd = 0;
-    int lineNumber = 0;
-    int lineNumberEnd = 0;
-    int commentType = 0;
+    private String text = "";
+    private String line = "";
+    private String translation = "!!! ЗДЕСЬ ДОЛЖЕН БЫТЬ ПЕРЕВОД !!!";
+    private boolean isCompleted = true;
+    private int indexStart = 0;
+    private int indexEnd = 0;
+    private int lineNumber = 0;
+    private int lineNumberEnd = 0;
+    private int commentType = 0;
+
+    public String getTranslation() {
+        return translation;
+    }
+    public void setTranslation(TranslateServiceImpl tSimpl) {
+        this.translation = tSimpl.translateText(text);
+    }
+
     public static final int COMM_SINGLE_LINE = 1;
     public static final int COMM_MULTI_LINE = 2;
     public static final int COMM_DOC = 3;
-
     public int getLineNumberEnd() {
         return lineNumberEnd;
     }
@@ -53,21 +59,14 @@ public class SearchResult {
     public void setLineNumber(int lineNumber) {
         this.lineNumber = lineNumber;
     }
+
     public String getText() {
         return text;
     }
     public void setText(String text) {
         this.text = text;
     }
-    public String getTranslation() {
-        return translation;
-    }
-    public void setTranslation(TranslateServiceImpl tSimpl) {
-//        String text1 = StringEscapeUtils.escapeJava(text);
-//        text1 = StringEscapeUtils.escapeJava(text1);
-        this.translation = tSimpl.translateText(text);
-//        this.translation = StringEscapeUtils.unescapeJava(translation);
-    }
+
     public boolean isCompleted() {
         return isCompleted;
     }
